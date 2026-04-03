@@ -21,11 +21,12 @@ __pycache__/
 *.pyd
 .Python
 
-# ETL intermediate files (keep final outputs in public/data)
-data/
+# ETL intermediate scratch files only (root /data/ folder)
+/data/
 public/data/weather_raw.json
 public/data/energy_raw.json
 public/data/transformed_data.json
+# public/data/zones.json, zones.geojson, etl_status.json are committed as seed data
 
 # Environment
 .env
