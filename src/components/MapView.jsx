@@ -4,6 +4,14 @@ import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 import { getZoneLoad, getLoadColor } from '../data/dataLoader'
 
+const getTempColor = (temp) => {
+  if (temp > 25) return 'rgba(216, 90, 48, 0.8)'   // Hot - Coral
+  if (temp > 15) return 'rgba(239, 159, 39, 0.7)'   // Warm - Amber
+  if (temp > 5) return 'rgba(93, 202, 165, 0.6)'    // Mild - Teal
+  if (temp > -5) return 'rgba(133, 183, 235, 0.5)'  // Cold - Blue
+  return 'rgba(100, 100, 255, 0.6)'                 // Freezing - Deep Blue
+}
+
 // Fix for default marker icons
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -12,7 +20,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
-const MapView = ({ zones, selectedZone, currentHour, playMode, onZoneSelect, formatHour }) => {
+const MapView = ({ zones, predictions, activeLayer, selectedZone, currentHour, playMode, onZoneSelect, formatHour }) => {
   const [geoData, setGeoData] = useState(null)
 
   useEffect(() => {
@@ -38,14 +46,30 @@ const MapView = ({ zones, selectedZone, currentHour, playMode, onZoneSelect, for
     layer.on({
       click: () => onZoneSelect(feature.id)
     });
-    const load = getZoneLoad(zones, feature.id, currentHour % 24, playMode === 'forecast')
-    layer.bindTooltip(`${feature.properties.name}: ${load} MW`, { sticky: true });
+    
+    const renderHour = playMode === 'forecast' ? currentHour : currentHour % 24
+    const val = activeLayer === 'temp' 
+      ? (predictions.city_total_predictions[renderHour]?.temperature || 0)
+      : getZoneLoad(predictions, feature.id, renderHour)
+
+    const label = activeLayer === 'temp' ? `${val}°C` : `${val} MW`
+    layer.bindTooltip(`${feature.properties.name}: ${label}`, { sticky: true });
   }
 
   const zoneStyle = (feature) => {
-    const load = getZoneLoad(zones, feature.id, currentHour % 24, playMode === 'forecast')
+    const renderHour = playMode === 'forecast' ? currentHour : currentHour % 24
+    
+    let fillColor = 'rgba(200, 200, 200, 0.5)'
+    if (activeLayer === 'temp') {
+      const temp = predictions.city_total_predictions[renderHour]?.temperature || 0
+      fillColor = getTempColor(temp)
+    } else {
+      const load = getZoneLoad(predictions, feature.id, renderHour)
+      fillColor = getLoadColor(load)
+    }
+
     return {
-      fillColor: getLoadColor(load),
+      fillColor: fillColor,
       weight: selectedZone === feature.id ? 4 : 2,
       opacity: 1,
       color: selectedZone === feature.id ? '#2D6A6A' : '#B8B4AC',
@@ -66,7 +90,7 @@ const MapView = ({ zones, selectedZone, currentHour, playMode, onZoneSelect, for
         />
         {geoData && (
           <GeoJSON 
-            key={currentHour + selectedZone} // Force style refresh on hour/selection change
+            key={`${currentHour}-${selectedZone}-${activeLayer}`} // Force refresh on hour/selection/layer change
             data={geoData} 
             style={zoneStyle} 
             onEachFeature={onEachFeature}

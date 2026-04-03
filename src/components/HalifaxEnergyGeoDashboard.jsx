@@ -123,6 +123,8 @@ const HalifaxEnergyGeoDashboard = () => {
           <div style={styles.mapCard}>
             <MapView
               zones={zones}
+              predictions={predictions}
+              activeLayer={activeLayer}
               selectedZone={selectedZone}
               currentHour={currentHour}
               playMode={playMode}
