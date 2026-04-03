@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-03T10:15:49.779872",
+  "generated_at": "2026-04-03T10:21:24.873249",
   "dataset_info": {
     "total_samples": 8760,
     "train_samples": 7008,
@@ -25,6 +25,12 @@
       "test_rmse": 65.31,
       "train_r2": 0.994,
       "test_r2": 0.989
+    },
+    "neural_network": {
+      "train_rmse": 52.16,
+      "test_rmse": 62.23,
+      "train_r2": 0.994,
+      "test_r2": 0.99
     }
   },
   "feature_importance": {

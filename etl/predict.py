@@ -4,6 +4,8 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.neural_network import MLPRegressor
+from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error, r2_score
 import xgboost as xgb
 from datetime import datetime
@@ -82,6 +84,26 @@ def train_and_evaluate():
     }
     
     # ------------------
+    # Model 3: Neural Network
+    # ------------------
+    print("Training Neural Network (MLP)...")
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    X_test_scaled = scaler.transform(X_test)
+    
+    nn_model = MLPRegressor(hidden_layer_sizes=(64, 32), max_iter=500, random_state=42)
+    nn_model.fit(X_train_scaled, y_train)
+    nn_preds_train = nn_model.predict(X_train_scaled)
+    nn_preds_test = nn_model.predict(X_test_scaled)
+    
+    nn_metrics = {
+        'train_rmse': round(np.sqrt(mean_squared_error(y_train, nn_preds_train)), 2),
+        'test_rmse': round(np.sqrt(mean_squared_error(y_test, nn_preds_test)), 2),
+        'train_r2': round(r2_score(y_train, nn_preds_train), 3),
+        'test_r2': round(r2_score(y_test, nn_preds_test), 3)
+    }
+
+    # ------------------
     # Generate Output JSON
     # ------------------
     metrics_output = {
@@ -95,7 +117,8 @@ def train_and_evaluate():
         },
         'models': {
             'xgboost': xgb_metrics,
-            'random_forest': rf_metrics
+            'random_forest': rf_metrics,
+            'neural_network': nn_metrics
         },
         'feature_importance': {
             'xgboost': {f: float(i) for f, i in zip(features, xgb_model.feature_importances_)}
