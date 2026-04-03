@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+.venv/
+
+# macOS metadata
+.DS_Store
+._*
+**/.DS_Store
+
+# Build output
+dist/
+build/
+
+# Vite cache
+.vite/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# ETL intermediate files (keep final outputs in public/data)
+data/
+public/data/weather_raw.json
+public/data/energy_raw.json
+public/data/transformed_data.json
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+*.swp
