@@ -6,7 +6,29 @@ const ForecastChart = ({ zones, zone, zoneId, currentHour, playMode }) => {
 
   const hours = Array.from({ length: 48 }, (_, i) => i)
   const maxLoad = (zone.baseLoad || 2000) * 1.1
-  const peakLoad = Math.round((zone.baseLoad || 2000) * 1.05)
+  
+  // Find the dynamically predicted peak hour
+  let peakLoad = 0;
+  let peakHour = 24; // start at 0 if you want overall peak, but traditionally forecast peak is in the future
+  hours.forEach(hour => {
+    const load = getZoneLoad(zones, zoneId, hour % 24, true)
+    if (load > peakLoad) {
+      peakLoad = load;
+      peakHour = hour;
+    }
+  });
+
+  const baseDate = new Date()
+  baseDate.setHours(0, 0, 0, 0)
+  baseDate.setHours(peakHour)
+  const formattedPeakTime = baseDate.toLocaleString('en-US', { 
+    weekday: 'short', 
+    month: 'short', 
+    day: 'numeric', 
+    hour: 'numeric', 
+    minute: '2-digit', 
+    hour12: true 
+  })
 
   return (
     <div style={styles.card}>
@@ -46,7 +68,7 @@ const ForecastChart = ({ zones, zone, zoneId, currentHour, playMode }) => {
       
       <div style={styles.peakNote}>
         <strong style={{ color: '#D4A574' }}>Peak forecast:</strong>{' '}
-        {peakLoad.toLocaleString()} MW at 6:00 PM tomorrow
+        {peakLoad.toLocaleString()} MW on {formattedPeakTime}
       </div>
     </div>
   )

@@ -60,14 +60,18 @@ const HalifaxEnergyGeoDashboard = () => {
   const peakZoneName = zones[peakZoneId].name.split(' ')[0]
 
   const formatHour = (h) => {
-    const h24 = h % 24
-    const day = Math.floor(h / 24)
-    const period = h24 >= 12 ? 'PM' : 'AM'
-    const h12 = h24 === 0 ? 12 : h24 > 12 ? h24 - 12 : h24
-    if (playMode === 'forecast' && h >= 24) {
-      return `Tomorrow ${h12}:00 ${period}`
-    }
-    return `${h12}:00 ${period}`
+    const baseDate = new Date()
+    baseDate.setHours(0, 0, 0, 0) // Start at midnight today
+    baseDate.setHours(h) // Adding h hours automatically rolls over to the next day if h >= 24
+    
+    return baseDate.toLocaleString('en-US', { 
+      weekday: 'short', 
+      month: 'short', 
+      day: 'numeric', 
+      hour: 'numeric', 
+      minute: '2-digit', 
+      hour12: true 
+    })
   }
 
   return (
