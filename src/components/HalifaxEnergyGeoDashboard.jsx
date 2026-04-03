@@ -6,10 +6,11 @@ import StatsBar from './StatsBar'
 import ForecastChart from './ForecastChart'
 import ModelComparison from './ModelComparison'
 import ModelArena from './ModelArena'
-import { loadZonesData, getZoneLoad, getTotalLoad } from '../data/dataLoader'
+import { loadZonesData, loadPredictionsData, getZoneLoad, getTotalLoad } from '../data/dataLoader'
 
 const HalifaxEnergyGeoDashboard = () => {
   const [zones, setZones] = useState(null)
+  const [predictions, setPredictions] = useState(null)
   const [currentHour, setCurrentHour] = useState(14)
   const [isPlaying, setIsPlaying] = useState(false)
   const [playMode, setPlayMode] = useState('historical')
@@ -20,8 +21,9 @@ const HalifaxEnergyGeoDashboard = () => {
 
   // Load zones on mount
   useEffect(() => {
-    loadZonesData().then(data => {
-      if (data) setZones(data)
+    Promise.all([loadZonesData(), loadPredictionsData()]).then(([zData, pData]) => {
+      if (zData) setZones(zData)
+      if (pData) setPredictions(pData)
     })
   }, [])
 
@@ -45,18 +47,19 @@ const HalifaxEnergyGeoDashboard = () => {
     setIsPlaying(false)
   }
 
-  if (!zones) {
-    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#F8F6F3' }}>Loading Geo-Mapping Data...</div>
+  if (!zones || !predictions) {
+    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#F8F6F3' }}>Loading Geo-Mapping Data & ML Models...</div>
   }
 
   const zone = zones[selectedZone]
-  const currentLoad = getZoneLoad(zones, selectedZone, currentHour % 24, playMode === 'forecast')
-  const totalLoad = getTotalLoad(zones, currentHour % 24, playMode === 'forecast')
-  const currentTemp = zone.currentTemp || 4.2
+  const renderHour = playMode === 'forecast' ? currentHour : currentHour % 24
+  const currentLoad = getZoneLoad(predictions, selectedZone, renderHour)
+  const totalLoad = getTotalLoad(predictions, renderHour)
+  const currentTemp = predictions.city_total_predictions[renderHour]?.temperature || 4.2
   
   // Find peak zone for StatsBar
   const peakZoneId = Object.keys(zones).reduce((a, b) => 
-    getZoneLoad(zones, a, currentHour % 24) > getZoneLoad(zones, b, currentHour % 24) ? a : b
+    getZoneLoad(predictions, a, renderHour) > getZoneLoad(predictions, b, renderHour) ? a : b
   )
   const peakZoneName = zones[peakZoneId].name.split(' ')[0]
 
@@ -155,6 +158,7 @@ const HalifaxEnergyGeoDashboard = () => {
             
             <ForecastChart 
               zones={zones}
+              predictions={predictions}
               zone={zone}
               zoneId={selectedZone}
               currentHour={currentHour}

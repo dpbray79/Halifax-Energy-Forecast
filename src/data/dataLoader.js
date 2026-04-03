@@ -19,23 +19,20 @@ export const loadZonesData = async () => {
   return data ? data.zones : null
 }
 
-// Logic migrated from zones.js for dynamic data
-export const getZoneLoad = (zones, zoneId, hour, isForecast = false) => {
-  const zone = zones[zoneId]
-  if (!zone) return 0
-  
-  const basePattern = zone.hourlyPattern[hour % 24]
-  const weatherFactor = 1 + (Math.sin(hour / 24 * Math.PI) * 0.1)
-  const forecastUncertainty = isForecast ? (1 + (Math.random() - 0.5) * 0.05) : 1
-  
-  return Math.round(zone.baseLoad * basePattern * weatherFactor * forecastUncertainty)
+export const loadPredictionsData = async () => {
+  return await fetchData('zone_predictions.json')
 }
 
-export const getTotalLoad = (zones, hour, isForecast = false) => {
-  if (!zones) return 0
-  return Object.keys(zones).reduce((sum, zoneId) => {
-    return sum + getZoneLoad(zones, zoneId, hour, isForecast)
-  }, 0)
+export const getZoneLoad = (predictions, zoneId, currentHour) => {
+  if (!predictions || !predictions.zones || !predictions.zones[zoneId]) return 0
+  const hourData = predictions.zones[zoneId][currentHour]
+  return hourData ? hourData.predicted_load_mw : 0
+}
+
+export const getTotalLoad = (predictions, currentHour) => {
+  if (!predictions || !predictions.city_total_predictions) return 0
+  const hourData = predictions.city_total_predictions[currentHour]
+  return hourData ? hourData.predicted_load_mw : 0
 }
 
 export const getLoadColor = (load, maxLoad = 2500) => {

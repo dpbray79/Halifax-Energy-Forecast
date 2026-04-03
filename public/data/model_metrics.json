@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-03T10:21:24.873249",
+  "generated_at": "2026-04-03T10:31:27.410986",
   "dataset_info": {
     "total_samples": 8760,
     "train_samples": 7008,
@@ -15,31 +15,31 @@
   },
   "models": {
     "xgboost": {
-      "train_rmse": 49.81,
-      "test_rmse": 57.93,
-      "train_r2": 0.995,
-      "test_r2": 0.991
-    },
-    "random_forest": {
-      "train_rmse": 52.92,
-      "test_rmse": 65.31,
-      "train_r2": 0.994,
-      "test_r2": 0.989
-    },
-    "neural_network": {
-      "train_rmse": 52.16,
-      "test_rmse": 62.23,
+      "train_rmse": 49.42,
+      "test_rmse": 55.33,
       "train_r2": 0.994,
       "test_r2": 0.99
+    },
+    "random_forest": {
+      "train_rmse": 47.35,
+      "test_rmse": 60.23,
+      "train_r2": 0.995,
+      "test_r2": 0.988
+    },
+    "neural_network": {
+      "train_rmse": 58.1,
+      "test_rmse": 66.83,
+      "train_r2": 0.992,
+      "test_r2": 0.985
     }
   },
   "feature_importance": {
     "xgboost": {
-      "hour": 0.08152083307504654,
-      "dayofweek": 0.2339460551738739,
-      "month": 0.0005139060667715967,
+      "hour": 0.08419375121593475,
+      "dayofweek": 0.2824684977531433,
+      "month": 0.0011424358235672116,
       "is_weekend": 0.0,
-      "temperature": 0.6840192675590515
+      "temperature": 0.6321952939033508
     }
   }
 }

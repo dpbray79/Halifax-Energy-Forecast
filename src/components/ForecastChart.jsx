@@ -1,8 +1,8 @@
 import React from 'react'
 import { getZoneLoad } from '../data/dataLoader'
 
-const ForecastChart = ({ zones, zone, zoneId, currentHour, playMode }) => {
-  if (!zone || !zones) return null
+const ForecastChart = ({ zones, predictions, zone, zoneId, currentHour, playMode }) => {
+  if (!zone || !zones || !predictions) return null
 
   const hours = Array.from({ length: 48 }, (_, i) => i)
   const maxLoad = (zone.baseLoad || 2000) * 1.1
@@ -11,7 +11,7 @@ const ForecastChart = ({ zones, zone, zoneId, currentHour, playMode }) => {
   let peakLoad = 0;
   let peakHour = 24; // start at 0 if you want overall peak, but traditionally forecast peak is in the future
   hours.forEach(hour => {
-    const load = getZoneLoad(zones, zoneId, hour % 24, true)
+    const load = getZoneLoad(predictions, zoneId, hour)
     if (load > peakLoad) {
       peakLoad = load;
       peakHour = hour;
@@ -38,7 +38,7 @@ const ForecastChart = ({ zones, zone, zoneId, currentHour, playMode }) => {
       
       <div style={styles.chartContainer}>
         {hours.map(hour => {
-          const load = getZoneLoad(zones, zoneId, hour % 24, true)
+          const load = getZoneLoad(predictions, zoneId, hour)
           const height = Math.max((load / maxLoad) * 100, 5)
           const isCurrent = hour === currentHour && playMode === 'forecast'
           
