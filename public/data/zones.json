@@ -32,7 +32,7 @@
         0.5,
         0.47
       ],
-      "currentTemp": 3.9
+      "currentTemp": 0.1
     },
     "northEnd": {
       "id": "northEnd",
@@ -65,7 +65,7 @@
         0.62,
         0.55
       ],
-      "currentTemp": 3.9
+      "currentTemp": 0.1
     },
     "southEnd": {
       "id": "southEnd",
@@ -98,7 +98,7 @@
         0.68,
         0.6
       ],
-      "currentTemp": 3.9
+      "currentTemp": 0.1
     },
     "dartmouth": {
       "id": "dartmouth",
@@ -131,7 +131,7 @@
         0.62,
         0.55
       ],
-      "currentTemp": 3.9
+      "currentTemp": 0.1
     },
     "burnside": {
       "id": "burnside",
@@ -164,7 +164,7 @@
         0.35,
         0.35
       ],
-      "currentTemp": 3.9
+      "currentTemp": 0.1
     }
   }
 }
