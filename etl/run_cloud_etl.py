@@ -27,6 +27,7 @@ def main():
         "extract_weather.py",
         "extract_energy.py",
         "transform.py",
+        "predict.py",
         "export_json.py"
     ]
     

@@ -1,0 +1,39 @@
+{
+  "generated_at": "2026-04-03T10:15:49.779872",
+  "dataset_info": {
+    "total_samples": 8760,
+    "train_samples": 7008,
+    "test_samples": 1752,
+    "features": [
+      "hour",
+      "dayofweek",
+      "month",
+      "is_weekend",
+      "temperature"
+    ],
+    "target": "load_mw"
+  },
+  "models": {
+    "xgboost": {
+      "train_rmse": 49.81,
+      "test_rmse": 57.93,
+      "train_r2": 0.995,
+      "test_r2": 0.991
+    },
+    "random_forest": {
+      "train_rmse": 52.92,
+      "test_rmse": 65.31,
+      "train_r2": 0.994,
+      "test_r2": 0.989
+    }
+  },
+  "feature_importance": {
+    "xgboost": {
+      "hour": 0.08152083307504654,
+      "dayofweek": 0.2339460551738739,
+      "month": 0.0005139060667715967,
+      "is_weekend": 0.0,
+      "temperature": 0.6840192675590515
+    }
+  }
+}

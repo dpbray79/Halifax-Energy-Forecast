@@ -5,6 +5,7 @@ import TimelineControls from './TimelineControls'
 import StatsBar from './StatsBar'
 import ForecastChart from './ForecastChart'
 import ModelComparison from './ModelComparison'
+import ModelArena from './ModelArena'
 import { loadZonesData, getZoneLoad, getTotalLoad } from '../data/dataLoader'
 
 const HalifaxEnergyGeoDashboard = () => {
@@ -109,53 +110,59 @@ const HalifaxEnergyGeoDashboard = () => {
       />
 
       {/* Main Content */}
-      <main style={styles.main}>
-        {/* Map Area */}
-        <div style={styles.mapCard}>
-          <MapView
-            zones={zones}
-            selectedZone={selectedZone}
-            currentHour={currentHour}
-            playMode={playMode}
-            onZoneSelect={setSelectedZone}
-            formatHour={formatHour}
-          />
-          
-          <TimelineControls
-            currentHour={currentHour}
-            setCurrentHour={setCurrentHour}
-            isPlaying={isPlaying}
-            setIsPlaying={setIsPlaying}
-            playMode={playMode}
-            setPlayMode={handleModeChange}
-            playSpeed={playSpeed}
-            setPlaySpeed={setPlaySpeed}
-            activeLayer={activeLayer}
-            setActiveLayer={setActiveLayer}
-          />
-        </div>
+      {activeTab === 'arena' ? (
+        <main>
+          <ModelArena />
+        </main>
+      ) : (
+        <main style={styles.main}>
+          {/* Map Area */}
+          <div style={styles.mapCard}>
+            <MapView
+              zones={zones}
+              selectedZone={selectedZone}
+              currentHour={currentHour}
+              playMode={playMode}
+              onZoneSelect={setSelectedZone}
+              formatHour={formatHour}
+            />
+            
+            <TimelineControls
+              currentHour={currentHour}
+              setCurrentHour={setCurrentHour}
+              isPlaying={isPlaying}
+              setIsPlaying={setIsPlaying}
+              playMode={playMode}
+              setPlayMode={handleModeChange}
+              playSpeed={playSpeed}
+              setPlaySpeed={setPlaySpeed}
+              activeLayer={activeLayer}
+              setActiveLayer={setActiveLayer}
+            />
+          </div>
 
-        {/* Sidebar */}
-        <aside style={styles.sidebar}>
-          <ZonePanel 
-            zone={zone} 
-            currentLoad={currentLoad}
-          />
-          
-          <ModelComparison 
-            zones={zones}
-            zoneId={selectedZone}
-          />
-          
-          <ForecastChart 
-            zones={zones}
-            zone={zone}
-            zoneId={selectedZone}
-            currentHour={currentHour}
-            playMode={playMode}
-          />
-        </aside>
-      </main>
+          {/* Sidebar */}
+          <aside style={styles.sidebar}>
+            <ZonePanel 
+              zone={zone} 
+              currentLoad={currentLoad}
+            />
+            
+            <ModelComparison 
+              zones={zones}
+              zoneId={selectedZone}
+            />
+            
+            <ForecastChart 
+              zones={zones}
+              zone={zone}
+              zoneId={selectedZone}
+              currentHour={currentHour}
+              playMode={playMode}
+            />
+          </aside>
+        </main>
+      )}
 
       {/* Footer */}
       <footer style={styles.footer}>
